@@ -4,29 +4,34 @@ import java.util.Scanner;
 /**
  * Problem A: "To Add or to Multiply." ICPC World Finals 2011.
  * 
- * <p>Consider the result of the sequence
+ * <p>
+ * Consider the result of the sequence
  * <code>c_t A,1 M,c_{t-1} A, 1 M,...,c_1 A, 1 M, c_0</code> when applied to
  * input <code>x</code>. A little thinking reveals that the result is
  * <code>x*m^t + a*(c_0 + c_1*m + ... + c_t * m^t)</code>.
  * 
- * <p>We can conclude immediately that <code>(q-p)*m^t <= s-r</code>, so in
+ * <p>
+ * We can conclude immediately that <code>(q-p)*m^t <= s-r</code>, so in
  * particular, <code>t <= log_m (s-r)</code>, so if <code>m>1</code>, then
  * <code>t</code> is at most 30. Therefore, we can afford to exhaustively
  * iterate over all values of t.
  * 
- * <p>For any fixed value of <code>t</code>, suppose we've determined that we want
+ * <p>
+ * For any fixed value of <code>t</code>, suppose we've determined that we want
  * the result when applied to <code>x</code> to be <code>x*m^t + a*b</code>. We
  * write <code>b</code> in base <code>m</code>, and if it cannot fit in
  * <code>t+1</code> digits, we put the overflow in <code>c_t</code>.
  * 
- * <p>The cost of this machine is <code>t + c_0 + c_1 + ... + c_t</code>.
+ * <p>
+ * The cost of this machine is <code>t + c_0 + c_1 + ... + c_t</code>.
  * Therefore, it is to our advantage to have as many zeroes in the base-m
  * representation as possible. We find lower and upper bounds on b, by
  * substituting in p and q, and we find the number between these bounds with the
  * most zeroes in its base-m representation. Clearly, the resulting sequence is
  * optimal for this fixed value of <code>t</code>.
  * 
- * <p>Since we can afford to iterate over all possible values of <code>t</code>,
+ * <p>
+ * Since we can afford to iterate over all possible values of <code>t</code>,
  * and finding the optimal sequence for any given <code>t</code> takes O(t)
  * time, the whole thing takes O(t^2) = O(log_m(s-r)^2).
  * 
@@ -35,22 +40,6 @@ import java.util.Scanner;
 public class ProbA {
   static int a;
   static int m;
-
-  static class Output {
-    private StringBuilder builder = new StringBuilder();
-    private boolean started = false;
-
-    public String toString() {
-      return started ? builder.toString() : "empty";
-    }
-
-    public void append(String s) {
-      if (started)
-        builder.append(' ');
-      started = true;
-      builder.append(s);
-    }
-  }
 
   static class Answer implements Comparable<Answer> {
     private int cost;
@@ -84,20 +73,21 @@ public class ProbA {
     }
 
     public String toString() {
-      Output output = new Output();
+      StringBuilder builder = new StringBuilder();
       int mults = 0;
       for (int digit : bDigits) {
         if (digit != 0) {
           if (mults != 0)
-            output.append(mults + "M");
+            builder.append(' ').append(mults).append('M');
           mults = 0;
-          output.append(digit + "A");
+          builder.append(' ').append(digit).append('A');
         }
         mults++;
       }
       if (--mults > 0)
-        output.append(mults + "M");
-      return output.toString();
+        builder.append(' ').append(mults).append('M');
+      String ans = builder.toString();
+      return ans.length() > 0 ? ans.trim() : "empty";
     }
   }
 
