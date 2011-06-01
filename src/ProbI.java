@@ -60,16 +60,17 @@ public class ProbI {
    */
   private static Area closerToOrigin(Point2D p) {
     AffineTransform trans = new AffineTransform();
-    if (p.getX() < 0) {
-      trans.scale(-1, 1);
-    }
-    if (p.getY() < 0) {
-      trans.scale(1, -1);
-    }
-    if (Math.abs(p.getX()) > Math.abs(p.getY())) {
+    if (Math.abs(p.getX()) > Math.abs(p.getY()))
       trans.concatenate(new AffineTransform(new double[]{0, 1, 1, 0}));
+    if (p.getX() < 0)
+      trans.scale(-1, 1);
+    if (p.getY() < 0)
+      trans.scale(1, -1);
+    try {
+      p = trans.inverseTransform(p, null);
+    } catch (NoninvertibleTransformException e) {
+      throw new RuntimeException(e);
     }
-    p = trans.transform(p, null);
 
     Path2D path = new Path2D.Double();
     if (p.getX() == p.getY()) {
