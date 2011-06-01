@@ -20,7 +20,7 @@ import java.util.Scanner;
  * @author Louis Wasserman, Assistant Coach, UChicago "Works in Theory"
  */
 public class ProbK {
-  public static void main(String[] args) throws NoninvertibleTransformException {
+  public static void main(String[] args) {
     Scanner input = new Scanner(System.in);
     for (int z = 1;; z++) {
       int n = input.nextInt();
