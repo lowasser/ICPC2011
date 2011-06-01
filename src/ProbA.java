@@ -104,7 +104,7 @@ public class ProbA {
       Answer best = null;
       for (int t = 0;; t++, mt *= m) {
         int bMin = (r + a - 1 - p * mt) / a, bMax = (s - q * mt) / a;
-        if (bMax < bMin || bMax < 0)
+        if (bMax < bMin || bMax < 0 || (t > 0 && m == 1))
           break;
         Answer ans =
             new Answer(
