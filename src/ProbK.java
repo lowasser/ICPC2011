@@ -27,8 +27,7 @@ public class ProbK {
       if (n == 0)
         break;
 
-      int[] xs = new int[n];
-      int[] ys = new int[n];
+      int[] xs = new int[n], ys = new int[n];
       for (int i = 0; i < n; i++) {
         xs[i] = input.nextInt();
         ys[i] = input.nextInt();
