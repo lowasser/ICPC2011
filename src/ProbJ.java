@@ -4,13 +4,13 @@ import java.util.*;
  * Problem J: "Pyramids." ICPC World Finals 2011.
  * 
  * This problem can be solved with dynamic programming. Note that there are at
- * most 198 possible pyramids which could ever be produced, and p[j] is the jth
+ * most 429 possible pyramids which could ever be produced, and p[j] is the jth
  * smallest pyramid. Let sol[i][j] be the best solution (according to the
  * Pharaoh) that uses exactly i blocks, and restricts itself to the smallest (by
- * volume) j pyramids. This array needs dimensions 10^6 by 198, which is quite
+ * volume) j pyramids. This array needs dimensions 10^6 by 429, which is quite
  * manageable. Clearly, sol[i][j] = best(p[j] + sol[i-p[j].volume][j-1],
  * sol[i][j-1]), which can be computed in constant time. Therefore, if c blocks
- * are available, the answer is sol[c][198].
+ * are available, the answer is sol[c][429].
  * 
  * @author Louis Wasserman, Assistant Coach, UChicago "Works in Theory"
  */
@@ -43,7 +43,7 @@ public class ProbJ {
     pyramids = new ArrayList<Pyramid>(100);
     int blocks = 1;
     int lowblocks = 1;
-    for (int h = 2; blocks < 100000; h++) {
+    for (int h = 2; blocks < 1000000; h++) {
       blocks += h * h;
       pyramids.add(new Pyramid(h, blocks, h, true));
       pyramids.add(new Pyramid(h, 4 * blocks, 2 * h, false));
@@ -79,25 +79,27 @@ public class ProbJ {
     }
   }
 
-  static Collection<Pyramid> pyramidsUpTo(int volume) {
+  private static Collection<Pyramid> pyramidsUpTo(int volume) {
     int index =
         Collections.binarySearch(pyramids,
-            new Pyramid(1000000, volume, 0, true));
-    return pyramids.subList((index >= 0) ? index : -1 - index, pyramids.size());
+            new Pyramid(2000000, volume, 0, true));
+    return pyramids.subList(0, (index >= 0) ? index : -1 - index);
   }
 
   public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
-    Solution[][] solutions = new Solution[100001][];
+    Solution[][] solutions = new Solution[1000001][];
     int lastDone = 0;
     for (int z = 1;; z++) {
       int c = scanner.nextInt();
       if (c == 0)
         break;
       for (int i = lastDone + 1; i <= c; i++) {
-        solutions[i] = new Solution[pyramids.size()];
         Solution s = null;
-        for (int j = 0; j < pyramids.size(); j++) {
+        int index = pyramidsUpTo(i).size();
+        solutions[i] = new Solution[index + 1];
+        assert i >= pyramids.get(index).volume;
+        for (int j = 0; j < index; j++) {
           Pyramid p = pyramids.get(j);
           int remaining = i - p.volume;
           if (remaining > 0 && j > 0 && solutions[remaining][j - 1] != null)
