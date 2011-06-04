@@ -38,44 +38,53 @@ import java.util.Scanner;
  * @author Louis Wasserman, Assistant Coach, UChicago "Works in Theory"
  */
 public class ProbA {
-  static int a;
-  static int m;
+  static long a;
+  static long m;
 
   static class Answer implements Comparable<Answer> {
-    private int cost;
-    private int[] bDigits;
+    private long cost;
+    private long[] bDigits;
     private int t;
 
-    public Answer(int[] bDigits) {
+    public Answer(long[] bDigits) {
       this.bDigits = bDigits;
       t = bDigits.length - 1;
       for (int i = 0, j = t; i < j; i++, j--) {
-        int tmp = bDigits[i];
+        long tmp = bDigits[i];
         bDigits[i] = bDigits[j];
         bDigits[j] = tmp;
       }
       cost = t;
-      for (int d : bDigits)
+      for (long d : bDigits)
         cost += d;
     }
 
-    public int apply(int k) {
-      for (int digit : bDigits)
+    public long apply(long k) {
+      for (long digit : bDigits)
         k = m * (k + a * digit);
       return k / m;
     }
 
     public int compareTo(Answer a) {
-      int cmp = cost - a.cost;
+      int cmp = cmpLong(cost, a.cost);
       for (int j = 0, k = 0; cmp == 0 && j <= t && k <= a.t; j++, k++)
-        cmp = bDigits[j] - a.bDigits[k];
+        cmp = cmpLong(bDigits[j], a.bDigits[k]);
       return (cmp == 0) ? t - a.t : cmp;
+    }
+
+    private static int cmpLong(long a, long b) {
+      if (a < b)
+        return -1;
+      else if (a == b)
+        return 0;
+      else
+        return 1;
     }
 
     public String toString() {
       StringBuilder builder = new StringBuilder();
-      int mults = 0;
-      for (int digit : bDigits) {
+      long mults = 0;
+      for (long digit : bDigits) {
         if (digit != 0) {
           if (mults != 0)
             builder.append(' ').append(mults).append('M');
@@ -96,14 +105,14 @@ public class ProbA {
     for (int z = 1;; z++) {
       a = input.nextInt();
       m = input.nextInt();
-      int p = input.nextInt(), q = input.nextInt(), r = input.nextInt(), s =
+      long p = input.nextInt(), q = input.nextInt(), r = input.nextInt(), s =
           input.nextInt();
       if ((a | m | p | q | r | s) == 0)
         break;
-      int mt = 1;
+      long mt = 1;
       Answer best = null;
       for (int t = 0;; t++, mt *= m) {
-        int bMin = (r + a - 1 - p * mt) / a, bMax = (s - q * mt) / a;
+        long bMin = (r + a - 1 - p * mt) / a, bMax = (s - q * mt) / a;
         if (bMax < bMin || bMax < 0 || (t > 0 && m == 1))
           break;
         Answer ans =
@@ -118,9 +127,9 @@ public class ProbA {
     }
   }
 
-  private static int[] inBetween(int[] d1, int[] d2) {
+  private static long[] inBetween(long[] d1, long[] d2) {
     int d = d1.length;
-    int[] digits = new int[d];
+    long[] digits = new long[d];
     for (int i = d - 1; i >= 0; i--) {
       if (d1[i] != d2[i]) {
         boolean allZero = true;
@@ -135,8 +144,8 @@ public class ProbA {
     return digits;
   }
 
-  private static int[] digits(int a, int base, int d) {
-    int[] digits = new int[d];
+  private static long[] digits(long a, long base, int d) {
+    long[] digits = new long[d];
     for (int i = 0; i < d - 1; i++, a /= base)
       digits[i] = a % base;
     digits[d - 1] = a;
