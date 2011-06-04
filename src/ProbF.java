@@ -33,21 +33,12 @@ public class ProbF {
     private final long dailyProfit;
     private final long price;
     private final long resalePrice;
-    private final int firstResaleDay;
 
-    Machine(int availDay, long dailyProfit, long price, long resalePrice) {
-      this(availDay, dailyProfit, price, resalePrice, (int) divCeil(price
-          - resalePrice, dailyProfit)
-          + 1 + availDay);
-    }
-
-    Machine(int availDay, long dailyProfit, long price, long resalePrice,
-        int firstResaleDay) {
+    Machine(int availDay, long price, long resalePrice, long dailyProfit) {
       this.availDay = availDay;
       this.dailyProfit = dailyProfit;
       this.price = price;
       this.resalePrice = resalePrice;
-      this.firstResaleDay = firstResaleDay;
     }
 
     public long valueWhenSold(int d) {
@@ -59,10 +50,6 @@ public class ProbF {
     }
   }
 
-  private static long divCeil(long a, long b) {
-    return (a + b - 1) / b;
-  }
-
   public static void main(String[] args) {
     Scanner input = new Scanner(System.in);
     for (int z = 1;; z++) {
@@ -72,15 +59,12 @@ public class ProbF {
       if ((n | c | d) == 0)
         break;
       Machine[] machinesByAvail = new Machine[n + 2];
-      for (int i = 0; i < n; i++) {
-        int di = input.nextInt();
-        int pi = input.nextInt();
-        int ri = input.nextInt();
-        int gi = input.nextInt();
-        machinesByAvail[i] = new Machine(di, gi, pi, ri);
-      }
-      machinesByAvail[n] = new Machine(0, 0, 0, c, 0);
-      machinesByAvail[n + 1] = new Machine(d + 1, 0, 0, 0, d + 1);
+      for (int i = 0; i < n; i++)
+        machinesByAvail[i] =
+            new Machine(input.nextInt(), input.nextInt(), input.nextInt(),
+                input.nextInt());
+      machinesByAvail[n] = new Machine(0, 0, c, 0);
+      machinesByAvail[n + 1] = new Machine(d + 1, 0, 0, 0);
       Arrays.sort(machinesByAvail);
       long[] dp = new long[n + 2];
       dp[0] = 0;
@@ -89,11 +73,9 @@ public class ProbF {
         // We are buying machinesByAvail[i].
         long bestValue = Integer.MIN_VALUE;
         for (int j = 0; j < i; j++)
-          // We are selling machinesByAvail[j].
-          if (machinesByAvail[j].firstResaleDay <= day)
-            bestValue =
-                Math.max(bestValue,
-                    dp[j] + machinesByAvail[j].valueWhenSold(day));
+          bestValue =
+              Math
+                .max(bestValue, dp[j] + machinesByAvail[j].valueWhenSold(day));
         bestValue -= machinesByAvail[i].price;
         if (bestValue < 0)
           bestValue = Integer.MIN_VALUE;
