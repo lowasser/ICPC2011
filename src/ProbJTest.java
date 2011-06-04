@@ -12,9 +12,9 @@ public class ProbJTest extends TestCase {
   public void testOnLargeData() {
     StringBuilder builder = new StringBuilder();
     Random random = new Random(1243913);
-    int cases = 10;
+    int cases = 1;
     for (int i = 0; i < cases; i++) {
-      builder.append(random.nextInt(100000) + 1).append('\n');
+      builder.append(random.nextInt(1000000) + 1).append('\n');
     }
     builder.append("0\n");
     String pyr = "\\d+[LH]";

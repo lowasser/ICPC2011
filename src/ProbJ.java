@@ -15,6 +15,8 @@ import java.util.*;
  * @author Louis Wasserman, Assistant Coach, UChicago "Works in Theory"
  */
 public class ProbJ {
+  private static final int TEN6 = 1000000;
+
   static class Pyramid implements Comparable<Pyramid> {
     final int height;
     final int volume;
@@ -43,13 +45,17 @@ public class ProbJ {
     pyramids = new ArrayList<Pyramid>(100);
     int blocks = 1;
     int lowblocks = 1;
-    for (int h = 2; blocks < 1000000; h++) {
+    for (int h = 2;; h++) {
       blocks += h * h;
+      if (blocks >= TEN6)
+        break;
       pyramids.add(new Pyramid(h, blocks, h, true));
-      pyramids.add(new Pyramid(h, 4 * blocks, 2 * h, false));
+      if (4 * blocks <= TEN6)
+        pyramids.add(new Pyramid(h, 4 * blocks, 2 * h, false));
       int lowWidth = 2 * h - 1;
       lowblocks += lowWidth * lowWidth;
-      pyramids.add(new Pyramid(h, lowblocks, lowWidth, false));
+      if (lowblocks <= TEN6)
+        pyramids.add(new Pyramid(h, lowblocks, lowWidth, false));
     }
     Collections.sort(pyramids);
     Collections.reverse(pyramids);
@@ -79,44 +85,58 @@ public class ProbJ {
     }
   }
 
-  private static Collection<Pyramid> pyramidsUpTo(int volume) {
+  private static List<Pyramid> pyramidsUpTo(int volume) {
     int index =
-        Collections.binarySearch(pyramids,
-            new Pyramid(2000000, volume, 0, true));
+        Collections.binarySearch(pyramids, new Pyramid(2 * TEN6, volume, 0,
+            true));
     return pyramids.subList(0, (index >= 0) ? index : -1 - index);
+  }
+
+  private static Solution[][] solutions;
+
+  private static Solution get(int i, int j) {
+    if (solutions[i] == null)
+      fill(i);
+    return solutions[i][j];
+  }
+
+  private static void fill(int i) {
+    if (solutions[i] != null)
+      return;
+    Solution s = null;
+    int index = pyramidsUpTo(i).size();
+    solutions[i] = new Solution[index + 1];
+    assert i >= pyramids.get(index).volume;
+    for (int j = 0; j < index; j++) {
+      Pyramid p = pyramids.get(j);
+      int remaining = i - p.volume;
+      if (remaining > 0 && j > 0 && solutions[remaining][j - 1] != null)
+        solutions[i][j] = s = new Solution(p, solutions[remaining][j - 1]);
+      else if (remaining == 0)
+        solutions[i][j] = s = new Solution(p, null);
+      else if (remaining < 0)
+        break;
+      else
+        solutions[i][j] = s;
+    }
   }
 
   public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
-    Solution[][] solutions = new Solution[1000001][];
-    int lastDone = 0;
     for (int z = 1;; z++) {
       int c = scanner.nextInt();
       if (c == 0)
         break;
-      for (int i = lastDone + 1; i <= c; i++) {
-        Solution s = null;
-        int index = pyramidsUpTo(i).size();
-        solutions[i] = new Solution[index + 1];
-        assert i >= pyramids.get(index).volume;
-        for (int j = 0; j < index; j++) {
-          Pyramid p = pyramids.get(j);
-          int remaining = i - p.volume;
-          if (remaining > 0 && j > 0 && solutions[remaining][j - 1] != null)
-            solutions[i][j] = s = new Solution(p, solutions[remaining][j - 1]);
-          else if (remaining == 0)
-            solutions[i][j] = s = new Solution(p, null);
-          else if (remaining < 0)
-            break;
-          else
-            solutions[i][j] = s;
-        }
+      solutions = new Solution[c + 1][];
+      for (int i = 1; i <= c; i++) {
+        if (i > 500000)
+          solutions[i - 500000] = null;
+        fill(i);
       }
-      lastDone = Math.max(lastDone, c);
       Solution best = null;
-      for (int j = 0; j < pyramids.size(); j++)
-        if (solutions[c][j] != null)
-          best = solutions[c][j];
+      for (int j = 0; j < solutions[c].length; j++)
+        if (get(c, j) != null)
+          best = get(c, j);
       System.out.println("Case " + z + ": "
           + ((best == null) ? "impossible" : best.toString()));
     }
