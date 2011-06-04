@@ -8,6 +8,7 @@ public class ICPCTestSuite extends TestCase {
     suite.addTestSuite(ProbATest.class);
     suite.addTestSuite(ProbBTest.class);
     suite.addTestSuite(ProbETest.class);
+    suite.addTestSuite(ProbFTest.class);
     suite.addTestSuite(ProbHTest.class);
     suite.addTestSuite(ProbITest.class);
     suite.addTestSuite(ProbJTest.class);
