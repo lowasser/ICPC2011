@@ -41,12 +41,12 @@ public class ProbF {
       this.resalePrice = resalePrice;
     }
 
-    public long valueWhenSold(int d) {
-      return dailyProfit * (d - availDay - 1) + resalePrice;
-    }
-
     @Override public int compareTo(Machine o) {
       return availDay - o.availDay;
+    }
+
+    public long valueWhenSold(int d) {
+      return dailyProfit * (d - availDay - 1) + resalePrice;
     }
   }
 
@@ -58,30 +58,28 @@ public class ProbF {
       int d = input.nextInt();
       if ((n | c | d) == 0)
         break;
-      Machine[] machinesByAvail = new Machine[n + 2];
-      for (int i = 0; i < n; i++)
-        machinesByAvail[i] =
+      Machine[] machines = new Machine[n += 2];
+      machines[0] = new Machine(0, 0, c, 0);
+      machines[1] = new Machine(d + 1, 0, 0, 0);
+      for (int i = 2; i < n; i++)
+        machines[i] =
             new Machine(input.nextInt(), input.nextInt(), input.nextInt(),
                 input.nextInt());
-      machinesByAvail[n] = new Machine(0, 0, c, 0);
-      machinesByAvail[n + 1] = new Machine(d + 1, 0, 0, 0);
-      Arrays.sort(machinesByAvail);
-      long[] dp = new long[n + 2];
+      Arrays.sort(machines);
+      long[] dp = new long[n];
       dp[0] = 0;
-      for (int i = 1; i < n + 2; i++) {
-        int day = machinesByAvail[i].availDay;
-        // We are buying machinesByAvail[i].
+      for (int i = 1; i < n; i++) {
+        int day = machines[i].availDay;
         long bestValue = Integer.MIN_VALUE;
         for (int j = 0; j < i; j++)
           bestValue =
-              Math
-                .max(bestValue, dp[j] + machinesByAvail[j].valueWhenSold(day));
-        bestValue -= machinesByAvail[i].price;
+              Math.max(bestValue, dp[j] + machines[j].valueWhenSold(day));
+        bestValue -= machines[i].price;
         if (bestValue < 0)
           bestValue = Integer.MIN_VALUE;
         dp[i] = bestValue;
       }
-      System.out.println("Case " + z + ": " + dp[n + 1]);
+      System.out.println("Case " + z + ": " + dp[n - 1]);
     }
   }
 }
