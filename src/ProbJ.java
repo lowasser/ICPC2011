@@ -4,13 +4,13 @@ import java.util.*;
  * Problem J: "Pyramids." ICPC World Finals 2011.
  * 
  * This problem can be solved with dynamic programming. Note that there are at
- * most 429 possible pyramids which could ever be produced, and p[j] is the jth
+ * most 320 possible pyramids which could ever be produced, and p[j] is the jth
  * smallest pyramid. Let sol[i][j] be the best solution (according to the
  * Pharaoh) that uses exactly i blocks, and restricts itself to the smallest (by
- * volume) j pyramids. This array needs dimensions 10^6 by 429, which is quite
+ * volume) j pyramids. This array needs dimensions 10^6 by 320, which is
  * manageable. Clearly, sol[i][j] = best(p[j] + sol[i-p[j].volume][j-1],
  * sol[i][j-1]), which can be computed in constant time. Therefore, if c blocks
- * are available, the answer is sol[c][429].
+ * are available, the answer is sol[c][320].
  * 
  * @author Louis Wasserman, Assistant Coach, UChicago "Works in Theory"
  */
@@ -42,7 +42,7 @@ public class ProbJ {
 
   static List<Pyramid> pyramids;
   static {
-    pyramids = new ArrayList<Pyramid>(100);
+    pyramids = new ArrayList<Pyramid>(320);
     int blocks = 1;
     int lowblocks = 1;
     for (int h = 2;; h++) {
