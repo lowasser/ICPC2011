@@ -14,8 +14,9 @@ import java.util.Scanner;
  * afford O(n^3) time without breaking a sweat.
  * 
  * Therefore, for every pair of distinct vertices, we rotate the polygon until
- * this line is horizontal, and we compute the height of the bounding box of the
- * resulting polygon. The minimum such height is the answer to the problem.
+ * the line between those vertices is horizontal, and we compute the height of
+ * the bounding box of the resulting polygon. The minimum such height is the
+ * answer to the problem.
  * 
  * @author Louis Wasserman, Assistant Coach, UChicago "Works in Theory"
  */
