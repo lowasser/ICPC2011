@@ -28,94 +28,63 @@ import java.util.*;
  * @author Louis Wasserman, Assistant Coach, UChicago "Works in Theory"
  */
 public class ProbH {
+  static List<Integer> biCompSizes;
+  static int[] depth;
+  static int[] low;
+  static List<List<Integer>> g;
+
   public static void main(String[] args) {
     Scanner input = new Scanner(System.in);
     for (int z = 1;; z++) {
       int n = input.nextInt();
       if (n == 0)
         break;
-      Map<Integer, Set<Integer>> g = new HashMap<Integer, Set<Integer>>(n);
+      g = new ArrayList<List<Integer>>(n + 2);
+      for (int i = 0; i < n + 2; i++)
+        g.add(new ArrayList<Integer>());
       for (int i = 0; i < n; i++) {
         int s = input.nextInt(), t = input.nextInt();
-        adj(g, s).add(t);
-        adj(g, t).add(s);
+        g.get(s).add(t);
+        g.get(t).add(s);
       }
-      for (Integer art : articulationPoints(g))
-        remove(g, art);
-      Collection<Set<Integer>> components = components(g);
+      depth = new int[n + 2];
+      Arrays.fill(depth, -1);
+      low = new int[n + 2];
+      biCompSizes = new ArrayList<Integer>();
+      dfs(1, 0);
       long poss = 1;
-      for (Set<Integer> c : components)
-        poss *= c.size();
-      System.out.println("Case " + z + ": " + components.size() + " " + poss);
+      for (int s : biCompSizes)
+        poss *= s;
+      System.out.println("Case " + z + ": " + biCompSizes.size() + " " + poss);
     }
   }
 
-  static <V> void remove(Map<V, Set<V>> g, V v) {
-    Set<V> adj = g.remove(v);
-    if (adj != null)
-      for (V w : adj)
-        g.get(w).remove(v);
+  private static void addIf(List<Integer> l, int i) {
+    if (i > 0)
+      l.add(i);
   }
 
-  private static <V> Collection<Set<V>> components(Map<V, Set<V>> g) {
-    Map<V, Set<V>> copy = new LinkedHashMap<V, Set<V>>(g);
-    List<Set<V>> comps = new ArrayList<Set<V>>();
-    while (!copy.isEmpty())
-      comps.add(dfsComponents(copy, copy.keySet().iterator().next(),
-          new HashSet<V>()));
-    return comps;
-  }
-
-  private static <V> Set<V> dfsComponents(Map<V, Set<V>> g, V v, Set<V> comp) {
-    comp.add(v);
-    Set<V> adj = g.remove(v);
-    if (adj != null)
-      for (V w : adj)
-        dfsComponents(g, w, comp);
-    return comp;
-  }
-
-  private static <V> Set<V> adj(Map<V, Set<V>> g, V s) {
-    Set<V> sAdj = g.get(s);
-    if (sAdj == null)
-      g.put(s, sAdj = new HashSet<V>());
-    return sAdj;
-  }
-
-  public static <V> Set<V> articulationPoints(Map<V, Set<V>> g) {
-    V v = g.keySet().iterator().next();
-    Map<V, Integer> depth = new HashMap<V, Integer>(g.size());
-    Map<V, Integer> low = new HashMap<V, Integer>(g.size());
-    Set<V> arts = new HashSet<V>();
-    int rootChildren = 0;
-    depth.put(v, 0);
-    for (V w : g.get(v))
-      if (dfs(g, w, depth, low, 1, arts))
-        rootChildren++;
-    if (rootChildren >= 2)
-      arts.add(v);
-    return arts;
-  }
-
-  public static <V> boolean dfs(Map<V, Set<V>> g, V v, Map<V, Integer> depth,
-      Map<V, Integer> low, int d, Set<V> arts) {
-    if (!depth.containsKey(v)) {
-      depth.put(v, d);
-      int lowpoint = d;
-      int maxLow = 0;
-      for (V w : g.get(v)) {
-        if (dfs(g, w, depth, low, d + 1, arts)) {
-          Integer wLow = low.get(w);
-          lowpoint = Math.min(lowpoint, wLow);
-          maxLow = Math.max(maxLow, wLow);
-        } else
-          lowpoint = Math.min(lowpoint, depth.get(w));
+  private static int dfs(int v, int d) {
+    depth[v] = d;
+    low[v] = d;
+    int maxLow = 0;
+    List<Integer> descs = new ArrayList<Integer>(g.get(v).size());
+    for (int w : g.get(v)) {
+      if (depth[w] >= 0) {
+        low[v] = Math.min(low[v], depth[w]);
+      } else {
+        addIf(descs, dfs(w, d + 1));
+        low[v] = Math.min(low[v], low[w]);
+        maxLow = Math.max(maxLow, low[w]);
       }
-      low.put(v, lowpoint);
-      if (maxLow >= d)
-        arts.add(v);
-      return true;
     }
-    return false;
+    if (maxLow >= d && !descs.isEmpty()) {
+      biCompSizes.addAll(descs);
+      return 0;
+    }
+    int desc = 1;
+    for (int ds : descs)
+      desc += ds;
+    return desc;
   }
 }
