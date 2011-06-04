@@ -57,7 +57,7 @@ public class ProbE {
         int bestX = -1;
         int bestY = -1;
         int d = input.nextInt();
-        d = Math.min(d, Math.max(dx, dy));
+        d = Math.min(d, dx + dy);
         for (int y = 1; y <= dy; y++) {
           for (int x = 1; x <= dx; x++) {
             int count = getWithinDist(x, y, d);
