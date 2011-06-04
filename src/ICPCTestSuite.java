@@ -14,5 +14,4 @@ public class ICPCTestSuite extends TestCase {
     suite.addTestSuite(ProbKTest.class);
     return suite;
   }
-
 }
