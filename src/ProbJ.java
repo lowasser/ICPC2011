@@ -88,13 +88,14 @@ public class ProbJ {
 
   public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
-    Solution[][] solutions = new Solution[100001][pyramids.size()];
+    Solution[][] solutions = new Solution[100001][];
     int lastDone = 0;
     for (int z = 1;; z++) {
       int c = scanner.nextInt();
       if (c == 0)
         break;
       for (int i = lastDone + 1; i <= c; i++) {
+        solutions[i] = new Solution[pyramids.size()];
         Solution s = null;
         for (int j = 0; j < pyramids.size(); j++) {
           Pyramid p = pyramids.get(j);
