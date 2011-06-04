@@ -23,16 +23,13 @@ import java.util.Scanner;
  */
 public class ProbE {
   static int[][] cumulative;
-  static int dx;
-  static int dy;
   static int width;
 
   public static void main(String[] args) {
     Scanner input = new Scanner(System.in);
     for (int z = 1;; z++) {
-      dx = input.nextInt();
-      dy = input.nextInt();
-      int n = input.nextInt(), q = input.nextInt();
+      int dx = input.nextInt(), dy = input.nextInt(), n = input.nextInt(), q =
+          input.nextInt();
       if ((dx | dy | n | q) == 0)
         break;
       System.out.println("Case " + z + ":");
@@ -53,11 +50,8 @@ public class ProbE {
               get(i - 1, j) + get(i, j - 1) - get(i - 1, j - 1) + get(i, j));
 
       for (int k = 0; k < q; k++) {
-        int bestCount = -1;
-        int bestX = -1;
-        int bestY = -1;
-        int d = input.nextInt();
-        d = Math.min(d, dx + dy);
+        int bestCount = -1, bestX = -1, bestY = -1;
+        int d = Math.min(input.nextInt(), dx + dy);
         for (int y = 1; y <= dy; y++) {
           for (int x = 1; x <= dx; x++) {
             int count = getWithinDist(x, y, d);
