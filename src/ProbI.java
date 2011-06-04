@@ -75,15 +75,15 @@ public class ProbI {
     }
 
     Path2D path = new Path2D.Double();
+    // We've guaranteed that 0 <= x <= y, with y > 0.  Now we do the casework
+    // for the possibilities 0 < x = y, 0 < x < y, and 0 = x < y.
     if (p.getX() == p.getY()) {
-      if (p.getX() != 0) {
-        path.moveTo(-MAX, -MAX);
-        path.lineTo(MAX, -MAX);
-        path.lineTo(MAX, -p.getX());
-        path.lineTo(-p.getX(), MAX);
-        path.lineTo(-MAX, MAX);
-        path.closePath();
-      }
+      path.moveTo(-MAX, -MAX);
+      path.lineTo(MAX, -MAX);
+      path.lineTo(MAX, -p.getX());
+      path.lineTo(-p.getX(), MAX);
+      path.lineTo(-MAX, MAX);
+      path.closePath();
     } else if (0 < p.getX() && p.getX() < p.getY()) {
       path.moveTo(-MAX, -MAX);
       path.lineTo(MAX, -MAX);
