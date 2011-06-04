@@ -19,7 +19,7 @@ import java.util.Scanner;
  * The recurrence, then, is as follows. Let the machines be sorted in ascending
  * order of available day. We let dp[i] be the money we have on day D_i, after
  * buying machine M_i. Then
- * <code>dp[i] = max {dp[j] + R_j + G_j*(D_i - D_j - 1) | j <= i}</code>. The
+ * <code>dp[i] = max {dp[j] + R_j + G_j*(D_i - D_j - 1) | j <= i} - P_i</code>. The
  * final answer, then, is the money we have after buying the dummy machine on
  * day D+1.
  * 
