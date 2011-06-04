@@ -15,14 +15,12 @@ public class ICPCRunner {
   }
 
   public static void assertMatches(String output, Object... cases) {
-    StringBuilder builder = new StringBuilder();
-    for (int i = 0; i < cases.length; i++) {
-      builder.append("Case ").append(i + 1).append(": (?:").append(cases[i])
-        .append(")\n");
+    String[] lines = output.split("\n");
+    for (int i = 0; i < lines.length; i++) {
+      String pat = "Case " + (i + 1) + ": (" + cases[i] + ")";
+      if (!Pattern.matches(pat, lines[i]))
+        throw new AssertionError(lines[i] + " does not match " + pat);
     }
-
-    if (!Pattern.matches(builder.toString(), output))
-      throw new AssertionError(output);
   }
 
   public static String runOnInput(Class<?> icpcClass, String input) {

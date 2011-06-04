@@ -113,7 +113,7 @@ public class ProbA {
       Answer best = null;
       for (int t = 0;; t++, mt *= m) {
         long bMin = (r + a - 1 - p * mt) / a, bMax = (s - q * mt) / a;
-        if (bMax < bMin || bMax < 0 || (t > 0 && m == 1))
+        if (bMax < bMin || bMax < 0 || bMin < 0 || (t > 0 && m == 1))
           break;
         Answer ans =
             new Answer(
@@ -146,9 +146,13 @@ public class ProbA {
 
   private static long[] digits(long a, long base, int d) {
     long[] digits = new long[d];
-    for (int i = 0; i < d - 1; i++, a /= base)
+    assert a >= 0;
+    for (int i = 0; i < d - 1; i++, a /= base) {
       digits[i] = a % base;
+      assert digits[i] >= 0;
+    }
     digits[d - 1] = a;
+    assert a >= 0;
     return digits;
   }
 }
