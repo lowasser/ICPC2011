@@ -55,8 +55,10 @@ public class ProbI {
   }
 
   /**
-   * Returns the Area of points that are closer to the origin in the L_\infty
-   * metric, that are within MAX of the origin in L_\infty.
+   * Returns the Area of points that are closer to the origin than to the
+   * specified point in the L_\infty metric. Since we can't have infinite Areas,
+   * we restrict it to the rectangle of points that are within MAX of the
+   * origin.
    */
   private static Area closerToOrigin(Point2D p) {
     AffineTransform trans = new AffineTransform();
