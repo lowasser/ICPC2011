@@ -28,10 +28,10 @@ import java.util.*;
  * @author Louis Wasserman, Assistant Coach, UChicago "Works in Theory"
  */
 public class ProbH {
-  static List<Integer> biCompSizes;
+  static List<Integer> biCompSizes; // list of discovered bicon component sizes
   static int[] depth;
   static int[] low;
-  static List<List<Integer>> g;
+  static List<List<Integer>> g; // adjacency lists
 
   public static void main(String[] args) {
     Scanner input = new Scanner(System.in);
@@ -64,6 +64,10 @@ public class ProbH {
       l.add(i);
   }
 
+  /**
+   * Returns the number of descendants of v that are in the same biconnected
+   * component as v. If v is an articulation vertex, returns 0.
+   */
   private static int dfs(int v, int d) {
     depth[v] = d;
     low[v] = d;

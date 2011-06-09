@@ -15,7 +15,7 @@ import java.util.*;
  * @author Louis Wasserman, Assistant Coach, UChicago "Works in Theory"
  */
 public class ProbJ {
-  private static final int TEN6 = 1000000;
+  private static final int MILLION = 1000000;
 
   static class Pyramid implements Comparable<Pyramid> {
     final int height;
@@ -47,14 +47,14 @@ public class ProbJ {
     int lowblocks = 1;
     for (int h = 2;; h++) {
       blocks += h * h;
-      if (blocks >= TEN6)
+      if (blocks >= MILLION)
         break;
       pyramids.add(new Pyramid(h, blocks, h, true));
-      if (4 * blocks <= TEN6)
+      if (4 * blocks <= MILLION)
         pyramids.add(new Pyramid(h, 4 * blocks, 2 * h, false));
       int lowWidth = 2 * h - 1;
       lowblocks += lowWidth * lowWidth;
-      if (lowblocks <= TEN6)
+      if (lowblocks <= MILLION)
         pyramids.add(new Pyramid(h, lowblocks, lowWidth, false));
     }
     Collections.sort(pyramids);
@@ -87,7 +87,7 @@ public class ProbJ {
 
   private static List<Pyramid> pyramidsUpTo(int volume) {
     int index =
-        Collections.binarySearch(pyramids, new Pyramid(2 * TEN6, volume, 0,
+        Collections.binarySearch(pyramids, new Pyramid(2 * MILLION, volume, 0,
             true));
     return pyramids.subList(0, (index >= 0) ? index : -1 - index);
   }
@@ -100,6 +100,9 @@ public class ProbJ {
     return solutions[i][j];
   }
 
+  /**
+   * Fills in the solutions array for solutions using exactly i cubes.
+   */
   private static void fill(int i) {
     if (solutions[i] != null)
       return;
@@ -129,6 +132,8 @@ public class ProbJ {
         break;
       solutions = new Solution[c + 1][];
       for (int i = 1; i <= c; i++) {
+        // My laptop has problems holding the whole thing in memory,
+        // but we never need to hold more than 500000 rows in memory at once.
         if (i > 500000)
           solutions[i - 500000] = null;
         fill(i);

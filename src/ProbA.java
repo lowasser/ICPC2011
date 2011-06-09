@@ -66,19 +66,13 @@ public class ProbA {
     }
 
     public int compareTo(Answer a) {
-      int cmp = cmpLong(cost, a.cost);
-      for (int j = 0, k = 0; cmp == 0 && j <= t && k <= a.t; j++, k++)
-        cmp = cmpLong(bDigits[j], a.bDigits[k]);
-      return (cmp == 0) ? t - a.t : cmp;
-    }
-
-    private static int cmpLong(long a, long b) {
-      if (a < b)
-        return -1;
-      else if (a == b)
-        return 0;
+      long cmp = cost - a.cost;
+      for (int j = 0; cmp == 0 && j < bDigits.length && j < a.bDigits.length; j++)
+        cmp = bDigits[j] - a.bDigits[j];
+      if (cmp == 0)
+        return t - a.t;
       else
-        return 1;
+        return (cmp > 0) ? 1 : -1; // cmp is a long, we must return int
     }
 
     public String toString() {
@@ -127,6 +121,10 @@ public class ProbA {
     }
   }
 
+  /**
+   * If two numbers are specified in a given base, finds the number between them
+   * with the fewest nonzero digits.
+   */
   private static long[] inBetween(long[] d1, long[] d2) {
     int d = d1.length;
     long[] digits = new long[d];
@@ -144,6 +142,10 @@ public class ProbA {
     return digits;
   }
 
+  /**
+   * Converts a to a representation in the specified base, with at most d
+   * digits.  Overflow is put into the most significant digit.
+   */
   private static long[] digits(long a, long base, int d) {
     long[] digits = new long[d];
     assert a >= 0;

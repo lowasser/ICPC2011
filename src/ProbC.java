@@ -80,6 +80,7 @@ public class ProbC {
     }
   }
 
+  // Returns a collection of points adjacent to (i, j).
   private static Collection<Point> adj(int i, int j) {
     List<Point> list = new ArrayList<Point>(4);
     for (int i2 = i - 1; i2 <= i + 1; i += 2)
